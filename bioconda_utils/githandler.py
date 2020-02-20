@@ -252,7 +252,7 @@ class GitHandlerBase():
         self.repo.create_head(branch_name, remote_branch)
         return self.get_local_branch(branch_name)
 
-    def get_merge_base(self, ref=None, other=None, try_fetch=False):
+    def get_merge_base(self, ref=None, other=None, try_fetch=True):
         """Determines the merge base for **other** and **ref**
 
         See git merge-base. Returns the commit at which **ref** split
