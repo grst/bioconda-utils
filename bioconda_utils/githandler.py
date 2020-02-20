@@ -70,7 +70,7 @@ class GitHandlerBase():
     """
     def __init__(self, repo: git.Repo,
                  dry_run: bool,
-                 home='bioconda/bioconda-recipes',
+                 home='grst/modules',
                  fork=None,
                  allow_dirty=False) -> None:
         #: GitPython Repo object representing our repository
@@ -390,7 +390,7 @@ class BiocondaRepoMixin(GitHandlerBase):
     """Githandler with logic specific to Bioconda Repo"""
 
     #: location of recipes folder within repo
-    recipes_folder = "recipes"
+    recipes_folder = "tools"
 
     #: location of configuration file within repo
     config_file = "config.yml"
@@ -408,15 +408,15 @@ class BiocondaRepoMixin(GitHandlerBase):
           root (e.g. ``recipes/blast``). Recipes outside of
           ``recipes_folder`` are ignored.
         """
-        if files is None:
-            files = ['meta.yaml', 'build.sh']
+        # Modified for nf-core: we want to observe all files in the recipe folder (for now)
+
+        # if files is None:
+        #     files = ["meta.yaml", "build.sh"]
         changed = set()
         for path in self.list_changed_files(ref, other):
             if not path.startswith(self.recipes_folder):
                 continue  # skip things outside the recipes folder
-            for fname in files:
-                if os.path.basename(path) == fname:
-                    changed.add(os.path.dirname(path))
+            changed.add(os.path.dirname(path))
         return list(changed)
 
     def get_blacklisted(self, ref=None):
@@ -486,7 +486,7 @@ class GitHandler(GitHandlerBase):
     """
     def __init__(self, folder: str=".",
                  dry_run=False,
-                 home='bioconda/bioconda-recipes',
+                 home='grst/modules',
                  fork=None,
                  allow_dirty=True,
                  depth=1) -> None:
@@ -607,8 +607,8 @@ class TempGitHandler(GitHandlerBase):
                  username: str = None,
                  password: str = None,
                  url_format="https://{userpass}github.com/{user}/{repo}.git",
-                 home_user="bioconda",
-                 home_repo="bioconda-recipes",
+                 home_user="grst",
+                 home_repo="modules",
                  fork_user=None,
                  fork_repo=None,
                  dry_run=False) -> None:
